@@ -5,6 +5,7 @@ import 'package:dadipay_app/utils/global_variables.dart';
 import 'package:dadipay_app/widgets/button_widget.dart';
 import 'package:dadipay_app/widgets/onboard_content.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Onboard extends StatefulWidget {
   const Onboard({Key? key}) : super(key: key);
@@ -22,12 +23,15 @@ void dispose() {
   pageController.dispose();
 }
 
-/*_storeOnboardInfo() async {
-  int isViewed = 0;
+@override
+void initState() {}
+
+_storeOnboardInfo() async {
+  bool isViewed = true;
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  await preferences.setInt('onboard', isViewed);
+  isViewed = await preferences.getBool('viewed') ?? false;
+  await preferences.setBool('viewed', isViewed);
 }
-*/
 
 class _OnboardState extends State<Onboard> {
   @override
@@ -39,7 +43,7 @@ class _OnboardState extends State<Onboard> {
         actions: [
           TextButton(
             onPressed: () async {
-              //await _storeOnboardInfo();
+              await _storeOnboardInfo();
               Navigator.pushNamed(context, '/login');
             },
             child: const Text(
@@ -98,7 +102,7 @@ class _OnboardState extends State<Onboard> {
                     text: 'Next ',
                     onPress: () async {
                       if (currentPageIndex == 2) {
-                        //await _storeOnboardInfo();
+                        await _storeOnboardInfo();
                         Navigator.pushNamed(context, '/login');
                       }
                       pageController.nextPage(
