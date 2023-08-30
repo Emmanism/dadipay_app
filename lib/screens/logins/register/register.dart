@@ -1,5 +1,7 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
 
+import 'package:dadipay_app/screens/logins/register/model/register_model.dart';
+import 'package:dadipay_app/serviices/api_client.dart';
 import 'package:dadipay_app/utils/global_variables.dart';
 import 'package:dadipay_app/widgets/button_widget.dart';
 import 'package:dadipay_app/widgets/my_input_field.dart';
@@ -29,20 +31,48 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  late TextEditingController passwordController;
-  final formKey = GlobalKey<FormState>();
+  final _register_formKey = GlobalKey<FormState>();
+
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController passwordConfirmationController =
+      TextEditingController();
+  final ApiClient apiClient = ApiClient();
   final formResult = {};
 
   @override
   void initState() {
     super.initState();
-    passwordController = TextEditingController();
   }
 
   @override
   void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    phoneNumberController.dispose();
+    userNameController.dispose();
     passwordController.dispose();
+    passwordConfirmationController.dispose();
     super.dispose();
+  }
+
+  void registerUser() {
+    apiClient.Register(
+      RegisterModel(
+          firstName: firstNameController.text,
+          lastName: lastNameController.text,
+          email: emailController.text,
+          phoneNumber: phoneNumberController.text,
+          userName: userNameController.text,
+          password: passwordController.text,
+          passwordConfirmation: passwordConfirmationController.text),
+    );
   }
 
   @override
@@ -78,10 +108,11 @@ class _RegisterState extends State<Register> {
                         children: [
                           const SizedBox(height: 18),
                           Form(
-                            key: formKey,
+                            key: _register_formKey,
                             child: Column(
                               children: [
                                 MyInputField(
+                                  controller: firstNameController,
                                   hintText: 'Firstname',
                                   label: 'Firstname',
                                   prefixIcon: Icon(Icons.person_2_outlined),
@@ -89,6 +120,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
+                                  controller: lastNameController,
                                   label: 'Lastname',
                                   hintText: 'Lastname',
                                   prefixIcon: Icon(Icons.person_2_outlined),
@@ -96,6 +128,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
+                                  controller: emailController,
                                   label: 'Email',
                                   hintText: 'Email',
                                   prefixIcon: Icon(Icons.mail_outline_outlined),
@@ -103,6 +136,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
+                                  controller: phoneNumberController,
                                   label: 'Phone Number',
                                   hintText: ' Enter Phone Number',
                                   prefixIcon: Icon(Icons.phone),
@@ -110,6 +144,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
+                                  controller: userNameController,
                                   label: 'Username',
                                   hintText: 'Unique Username',
                                   prefixIcon: Icon(Icons.person_2_outlined),
@@ -117,26 +152,33 @@ class _RegisterState extends State<Register> {
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
+                                  controller: passwordController,
                                   label: 'Password',
                                   hintText: ' Create a Strong Password',
                                   isPassword: true,
                                   prefixIcon: Icon(Icons.lock_outline_sharp),
                                   keyboardType: TextInputType.visiblePassword,
-                                  controller: passwordController,
                                 ),
                                 const SizedBox(height: 20),
                                 MyInputField(
+                                  controller: passwordConfirmationController,
                                   label: 'Comfirm Password',
                                   hintText: ' Comfirm Password',
                                   isPassword: true,
                                   prefixIcon: Icon(Icons.lock_outline_sharp),
                                   keyboardType: TextInputType.visiblePassword,
-                                  controller: passwordController,
                                 ),
                                 const SizedBox(height: 20),
                                 ButtonWidget(
-                                  onPress: () {},
-                                  text: 'Login',
+                                  onPress: () {
+                                    if (_register_formKey.currentState!
+                                        .validate()) {
+                                      registerUser();
+                                      print("User Registered");
+                                      Navigator.pushNamed(context, '/verify');
+                                    }
+                                  },
+                                  text: 'Register',
                                 )
                               ],
                             ),

@@ -8,7 +8,6 @@ class MyInputField extends StatefulWidget {
       this.isPassword = false,
       this.hintText,
       this.keyboardType,
-      this.validator,
       this.onSaved,
       this.prefixIcon,
       this.label,
@@ -18,7 +17,7 @@ class MyInputField extends StatefulWidget {
   final bool isPassword;
   final String? hintText;
   final TextInputType? keyboardType;
-  final String? Function(String?)? validator;
+
   final void Function(String?)? onSaved;
   final TextEditingController? controller;
   final Icon? prefixIcon;
@@ -45,7 +44,12 @@ class _MyInputFieldState extends State<MyInputField> {
       autocorrect: !widget.isPassword,
       enableSuggestions: !widget.isPassword,
       keyboardType: widget.keyboardType,
-      validator: widget.validator,
+      validator: (val) {
+        if (val == null || val.isEmpty) {
+          return 'Error ';
+        }
+        return null;
+      },
       onSaved: widget.onSaved,
       style: const TextStyle(
           color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),

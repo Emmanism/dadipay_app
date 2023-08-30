@@ -1,5 +1,7 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, non_constant_identifier_names
 
+import 'package:dadipay_app/screens/logins/models/login_model.dart';
+import 'package:dadipay_app/serviices/api_client.dart';
 import 'package:dadipay_app/utils/global_variables.dart';
 import 'package:dadipay_app/widgets/button_widget.dart';
 import 'package:dadipay_app/widgets/my_input_field.dart';
@@ -30,20 +32,28 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late TextEditingController passwordController;
-  final formKey = GlobalKey<FormState>();
+  final _login_formKey = GlobalKey<FormState>();
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final ApiClient apiClient = ApiClient();
   final formResult = {};
 
   @override
   void initState() {
     super.initState();
-    passwordController = TextEditingController();
   }
 
   @override
   void dispose() {
+    emailController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  void loginUser() {
+    apiClient.Login(LogInModel(
+        email: emailController.text, password: passwordController.text));
   }
 
   @override
@@ -79,25 +89,31 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           const SizedBox(height: 18),
                           Form(
-                            key: formKey,
+                            key: _login_formKey,
                             child: Column(
                               children: [
                                 MyInputField(
+                                  controller: emailController,
                                   hintText: 'Email',
                                   prefixIcon: Icon(Icons.mail_outline_outlined),
                                   keyboardType: TextInputType.emailAddress,
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
+                                  controller: passwordController,
                                   hintText: 'Password',
                                   isPassword: true,
                                   prefixIcon: Icon(Icons.lock_outline_sharp),
                                   keyboardType: TextInputType.visiblePassword,
-                                  controller: passwordController,
                                 ),
                                 const SizedBox(height: 20),
                                 ButtonWidget(
-                                  onPress: () {},
+                                  onPress: () {
+                                    if (_login_formKey.currentState!
+                                        .validate()) {
+                                      loginUser();
+                                    }
+                                  },
                                   text: 'Login',
                                 )
                               ],
