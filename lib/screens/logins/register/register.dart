@@ -36,6 +36,9 @@ class _RegisterState extends State<Register> {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController middleNameController = TextEditingController();
+  final TextEditingController occupationController = TextEditingController();
+  final TextEditingController fullNameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
 
   final TextEditingController userNameController = TextEditingController();
@@ -55,6 +58,9 @@ class _RegisterState extends State<Register> {
     firstNameController.dispose();
     lastNameController.dispose();
     emailController.dispose();
+    middleNameController.dispose();
+    occupationController.dispose();
+    fullNameController.dispose();
     phoneNumberController.dispose();
     userNameController.dispose();
     passwordController.dispose();
@@ -67,6 +73,9 @@ class _RegisterState extends State<Register> {
       RegisterModel(
           firstName: firstNameController.text,
           lastName: lastNameController.text,
+          middleName: middleNameController.text,
+          occupation: occupationController.text,
+          fullName: fullNameController.text,
           email: emailController.text,
           phoneNumber: phoneNumberController.text,
           userName: userNameController.text,
@@ -84,12 +93,8 @@ class _RegisterState extends State<Register> {
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/images/logos.png',
-                  height: 55,
-                ),
                 const Text(
                   'Sign Up',
                   style: TextStyle(
@@ -123,6 +128,30 @@ class _RegisterState extends State<Register> {
                                   controller: lastNameController,
                                   label: 'Lastname',
                                   hintText: 'Lastname',
+                                  prefixIcon: Icon(Icons.person_2_outlined),
+                                  keyboardType: TextInputType.name,
+                                ),
+                                const SizedBox(height: 15),
+                                MyInputField(
+                                  controller: middleNameController,
+                                  label: 'Middlename',
+                                  hintText: 'Middlename',
+                                  prefixIcon: Icon(Icons.person_2_outlined),
+                                  keyboardType: TextInputType.name,
+                                ),
+                                const SizedBox(height: 15),
+                                MyInputField(
+                                  controller: occupationController,
+                                  label: 'Occupation',
+                                  hintText: 'Occupation',
+                                  prefixIcon: Icon(Icons.person_2_outlined),
+                                  keyboardType: TextInputType.name,
+                                ),
+                                const SizedBox(height: 15),
+                                MyInputField(
+                                  controller: fullNameController,
+                                  label: 'Fullname',
+                                  hintText: 'Fullname',
                                   prefixIcon: Icon(Icons.person_2_outlined),
                                   keyboardType: TextInputType.name,
                                 ),
@@ -202,7 +231,7 @@ class _RegisterState extends State<Register> {
                               Navigator.pushNamed(context, '/login');
                             },
                             child: Text(
-                              'Create one',
+                              'Login Here',
                               style: TextStyle(
                                   color: KprimaryColor,
                                   fontWeight: FontWeight.bold),
