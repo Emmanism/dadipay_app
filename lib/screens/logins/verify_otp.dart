@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:dadipay_app/screens/logins/register/model/register_model.dart';
 import 'package:dadipay_app/utils/global_variables.dart';
 import 'package:dadipay_app/widgets/button_widget.dart';
 import 'package:dadipay_app/widgets/opt_field.dart';
@@ -46,7 +47,7 @@ class _VeriryOTPState extends State<VerifyOTP> {
             ),
             Center(
               child: Text(
-                'Your Verification Code OTP has been sent to +23470******76',
+                'Your Verification Code OTP has been sent  ',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.black,

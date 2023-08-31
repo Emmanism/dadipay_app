@@ -20,6 +20,9 @@ class _OtpFieldState extends State<OtpField> {
           height: 68,
           width: 64,
           child: TextFormField(
+            decoration: InputDecoration(
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(5))),
             onChanged: (value) {
               if (value.length == 1) {
                 FocusScope.of(context).nextFocus();

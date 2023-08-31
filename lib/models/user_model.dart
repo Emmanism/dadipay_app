@@ -1,63 +1,50 @@
 class UserModel {
+  final String id;
+  final String token;
   final String firstName;
   final String lastName;
   final String middleName;
+  final String occupation;
+  final String fullName;
+  final String userName;
   final String phoneNumber;
-  final String bankingStatus;
-  final String vendorCategory;
-  final String businessAddress;
-  final String homeAddress;
-  final String nin;
-  final String bvn;
-  final String nok;
-  final String role;
-  final String nokAddress;
-  final String nokNumber;
   final String password;
   final String email;
   final String passwordConfirmation;
-  final String businessName;
+  final String role;
+  final String smsPinId;
 
-  UserModel({
-    required this.firstName,
-    required this.lastName,
-    required this.middleName,
-    required this.phoneNumber,
-    required this.bankingStatus,
-    required this.vendorCategory,
-    required this.businessAddress,
-    required this.homeAddress,
-    required this.nin,
-    required this.bvn,
-    required this.nok,
-    required this.role,
-    required this.nokAddress,
-    required this.nokNumber,
-    required this.password,
-    required this.email,
-    required this.passwordConfirmation,
-    required this.businessName,
-  });
+  UserModel(
+      {required this.id,
+      required this.token,
+      required this.firstName,
+      required this.lastName,
+      required this.middleName,
+      required this.occupation,
+      required this.fullName,
+      required this.userName,
+      required this.phoneNumber,
+      required this.password,
+      required this.email,
+      required this.passwordConfirmation,
+      required this.role,
+      required this.smsPinId});
 
-  Map<String, String> toMap() {
+  Map<String, dynamic> toJson() {
     return {
+      'u_id': id,
+      'token': token,
       'firstname': firstName,
       'lastname': lastName,
       'middlename': middleName,
+      'occupation': occupation,
+      'username': userName,
+      'fullname': fullName,
       'phone_number': phoneNumber,
-      'banking_status': bankingStatus,
-      'vendor_category': vendorCategory,
-      'business_address': businessAddress,
-      'home_address': homeAddress,
-      'NIN': nin,
-      'BVN': bvn,
-      'NOK': nok,
-      'NOK_address': nokAddress,
-      'NOK_number': nokNumber,
       'password': password,
       'email': email,
       'password_confirmation': passwordConfirmation,
-      'business_name': businessName,
+      'sms_pinId': smsPinId,
     };
   }
 }

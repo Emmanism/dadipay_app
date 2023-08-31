@@ -62,15 +62,12 @@ class _LoginPageState extends State<LoginPage> {
       child: Scaffold(
         backgroundColor: const Color(0xFFF3F3F3),
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: EdgeInsets.only(bottom: 50),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/images/logos.png',
-                height: 55,
-              ),
-              const Text(
+              Text(
                 'Login',
                 style: TextStyle(
                     fontSize: 22,
@@ -112,6 +109,8 @@ class _LoginPageState extends State<LoginPage> {
                                     if (_login_formKey.currentState!
                                         .validate()) {
                                       loginUser();
+                                      print("User Login Succesfully");
+                                      Navigator.pushNamed(context, '/home');
                                     }
                                   },
                                   text: 'Login',

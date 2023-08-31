@@ -29,7 +29,7 @@ void initState() {}
 _storeOnboardInfo() async {
   bool isViewed = true;
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  isViewed = await preferences.getBool('viewed') ?? false;
+  isViewed = preferences.getBool('viewed') ?? false;
   await preferences.setBool('viewed', isViewed);
 }
 
