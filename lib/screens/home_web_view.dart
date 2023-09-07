@@ -13,10 +13,9 @@ class HomeWebView extends StatefulWidget {
 class _HomeWebViewState extends State<HomeWebView> {
   @override
   Widget build(BuildContext context) {
-    final UserPro = Provider.of<UserProvider>(context).user;
     return SafeArea(
         child: Scaffold(
-      body: Text(UserPro.toString()),
+      body: Text(''),
     ));
   }
 }
