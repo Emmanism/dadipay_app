@@ -35,7 +35,7 @@ class _VeriryOTPState extends State<VerifyOTP> {
                     Icons.arrow_back_ios_new,
                     color: Colors.white,
                   ),
-                )
+                ),
               ],
             ),
             Text(
