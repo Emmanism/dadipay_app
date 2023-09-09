@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:dadipay_app/models/user_model.dart';
 import 'package:dadipay_app/providers/user_provider.dart';
+import 'package:dadipay_app/screens/home_web_view.dart';
 import 'package:dadipay_app/screens/logins/forgot_password/models/forgot_password_model.dart';
 import 'package:dadipay_app/screens/logins/models/login_model.dart';
 import 'package:dadipay_app/screens/logins/register/model/register_model.dart';
@@ -19,44 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
-  //Registration Route Api
-  /*Future<void> Register(RegisterModel user) async {
-    try {
-      UserModel userModel = UserModel(
-        id: '',
-        token: '',
-        smsPinId: '',
-        role: '',
-        firstName: user.firstName,
-        lastName: user.lastName,
-        middleName: user.middleName,
-        occupation: user.occupation,
-        userName: user.userName,
-        fullName: user.fullName,
-        phoneNumber: user.phoneNumber,
-        password: user.password,
-        email: user.email,
-        passwordConfirmation: user.passwordConfirmation,
-      );
-      http.Response response = await http.post(
-        Uri.parse('$baseUrl/register'),
-        body: jsonEncode(user.toJson()),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/vnd.api+json',
-        },
-      );
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        print('Registration successful: $responseData');
-      } else {
-        print('Server error: ${response.statusCode == 501}');
-        throw Exception('Server error');
-      }
-    } catch (e) {}
-  }
-  */
-
+  //Route API For Registration
   Future<void> Register(RegisterModel user) async {
     try {
       UserModel userModel = UserModel(
@@ -97,7 +61,7 @@ class ApiClient {
   }
 
   //Login Routes Api
-  Future<void> Login(LogInModel user) async {
+  Future<void> Login(LogInModel user, BuildContext context) async {
     try {
       http.Response response = await http.post(Uri.parse('$baseUrl/login'),
           body: jsonEncode(user.toJson()),
@@ -108,6 +72,9 @@ class ApiClient {
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         print(' Login successful: $responseData');
+        //After Succesfull Request
+        //Navigate to HomeWebView
+        Navigator.pushNamed(context, '/home');
       } else {
         print(response.body);
         print(response.statusCode);
@@ -115,9 +82,7 @@ class ApiClient {
         print('Server error: ${response}');
         throw Exception('Server error');
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   Future<void> ForgotPassword(ForgotPasswordModel user) async {

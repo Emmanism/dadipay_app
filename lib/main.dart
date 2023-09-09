@@ -8,12 +8,16 @@ import 'package:dadipay_app/screens/logins/verify_otp.dart';
 import 'package:dadipay_app/screens/onboard/onboard.dart';
 import 'package:dadipay_app/utils/global_variables.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 bool isViewed = false;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   SharedPreferences preferences = await SharedPreferences.getInstance();
   isViewed = preferences.getBool('isViewed') ?? true;
   await preferences.setBool('isViewed', true);

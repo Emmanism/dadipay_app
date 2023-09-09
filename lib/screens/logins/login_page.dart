@@ -3,6 +3,7 @@
 import 'package:dadipay_app/screens/logins/models/login_model.dart';
 import 'package:dadipay_app/serviices/api_client.dart';
 import 'package:dadipay_app/utils/global_variables.dart';
+import 'package:dadipay_app/utils/utils.dart';
 import 'package:dadipay_app/widgets/button_widget.dart';
 import 'package:dadipay_app/widgets/my_input_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,6 +38,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final ApiClient apiClient = ApiClient();
+  final Utils utils = Utils();
   final formResult = {};
 
   @override
@@ -52,8 +54,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void loginUser() {
-    apiClient.Login(LogInModel(
-        email: emailController.text, password: passwordController.text));
+    apiClient.Login(
+        LogInModel(
+            email: emailController.text, password: passwordController.text),
+        context);
   }
 
   @override
@@ -109,8 +113,10 @@ class _LoginPageState extends State<LoginPage> {
                                     if (_login_formKey.currentState!
                                         .validate()) {
                                       loginUser();
-                                      print("User Login Succesfully");
-                                      Navigator.pushNamed(context, '/home');
+                                    } else {
+                                      utils.viewShowDialog(
+                                          context, 'Invalid Login Details',
+                                          isSuccess: false);
                                     }
                                   },
                                   text: 'Login',
