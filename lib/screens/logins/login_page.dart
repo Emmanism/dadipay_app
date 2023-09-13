@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, non_constant_identifier_names
 
+import 'package:dadipay_app/routes/app_routes.dart';
 import 'package:dadipay_app/screens/logins/models/login_model.dart';
 import 'package:dadipay_app/serviices/api_client.dart';
 import 'package:dadipay_app/utils/global_variables.dart';
@@ -38,6 +39,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final ApiClient apiClient = ApiClient();
+  final AppRoutes appRoutes = AppRoutes();
   final Utils utils = Utils();
   final formResult = {};
 
@@ -98,6 +100,17 @@ class _LoginPageState extends State<LoginPage> {
                                   hintText: 'Email',
                                   prefixIcon: Icon(Icons.mail_outline_outlined),
                                   keyboardType: TextInputType.emailAddress,
+                                  validator: (value) {
+                                    RegExp emailRegExp = RegExp(
+                                        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
+
+                                    if (value == null || value.isEmpty) {
+                                      return 'Email can\'t be empty';
+                                    } else if (!emailRegExp.hasMatch(value)) {
+                                      return 'Enter a correct email';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
@@ -106,6 +119,12 @@ class _LoginPageState extends State<LoginPage> {
                                   isPassword: true,
                                   prefixIcon: Icon(Icons.lock_outline_sharp),
                                   keyboardType: TextInputType.visiblePassword,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This field cant be empty';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 20),
                                 ButtonWidget(
@@ -113,10 +132,8 @@ class _LoginPageState extends State<LoginPage> {
                                     if (_login_formKey.currentState!
                                         .validate()) {
                                       loginUser();
-                                    } else {
-                                      utils.viewShowDialog(
-                                          context, 'Invalid Login Details',
-                                          isSuccess: false);
+                                      utils.showSnackBar(
+                                          context, 'Login Succesfully');
                                     }
                                   },
                                   text: 'Login',
@@ -137,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/forgot');
+                          Navigator.pushNamed(context, appRoutes.forgot);
                         },
                         child: const Text(
                           'Reset Password',
@@ -149,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                         const Text('Don\'t have an account? '),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, '/register');
+                            Navigator.pushNamed(context, appRoutes.register);
                           },
                           child: Text(
                             'Create one',

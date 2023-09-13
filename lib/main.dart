@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:dadipay_app/routes/app_routes.dart';
 import 'package:dadipay_app/screens/home_web_view.dart';
 import 'package:dadipay_app/screens/logins/forgot_password/forgot_password.dart';
 import 'package:dadipay_app/screens/logins/login_page.dart';
@@ -21,13 +22,15 @@ Future<void> main() async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
   isViewed = preferences.getBool('isViewed') ?? true;
   await preferences.setBool('isViewed', true);
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
   // This widget is the root of your application.
+
+  final AppRoutes appRoutes = AppRoutes();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -37,15 +40,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: KprimaryColor),
         useMaterial3: true,
       ),
-      initialRoute: isViewed == false ? '/' : '/login',
-      routes: {
-        '/': (context) => Onboard(),
-        '/login': (context) => LoginPage(),
-        '/home': (context) => HomeWebView(),
-        '/forgot': (context) => ForgotPassword(),
-        '/register': (context) => Register(),
-        '/verify': (context) => VerifyOTP(),
-      },
+      onGenerateRoute: appRoutes.controller,
+      initialRoute: isViewed == false ? appRoutes.onboard : appRoutes.login,
     );
   }
 }

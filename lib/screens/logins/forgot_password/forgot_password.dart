@@ -39,7 +39,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   void ForgotPassword() {
     apiClient.ForgotPassword(
-        ForgotPasswordModel(phoneNumber: _resetPasswordController.text));
+        ForgotPasswordModel(phoneNumber: _resetPasswordController.text),
+        context);
   }
 
   @override
@@ -109,14 +110,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         onPress: () async {
                           if (_resetPassword_key.currentState!.validate()) {
                             ForgotPassword();
-                            print('OTP Sent Check Your Inbox');
-                            utils.viewShowDialog(
-                                context, 'OTP Sent Succesfully',
-                                isSuccess: true);
-                          } else {
-                            utils.viewShowDialog(
-                                context, 'OTP Sent Succesfully',
-                                isSuccess: false);
                           }
                         })
                   ],

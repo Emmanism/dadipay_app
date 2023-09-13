@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors, non_constant_identifier_names
 
+import 'package:dadipay_app/routes/app_routes.dart';
 import 'package:dadipay_app/screens/logins/register/model/register_model.dart';
 import 'package:dadipay_app/serviices/api_client.dart';
+import 'package:dadipay_app/utils/error_handling.dart';
 import 'package:dadipay_app/utils/global_variables.dart';
 import 'package:dadipay_app/widgets/button_widget.dart';
 import 'package:dadipay_app/widgets/my_input_field.dart';
@@ -46,6 +48,7 @@ class _RegisterState extends State<Register> {
   final TextEditingController passwordConfirmationController =
       TextEditingController();
   final ApiClient apiClient = ApiClient();
+  final AppRoutes appRoutes = AppRoutes();
   final formResult = {};
 
   @override
@@ -70,18 +73,18 @@ class _RegisterState extends State<Register> {
 
   void registerUser() {
     apiClient.Register(
-      RegisterModel(
-          firstName: firstNameController.text,
-          lastName: lastNameController.text,
-          middleName: middleNameController.text,
-          occupation: occupationController.text,
-          fullName: fullNameController.text,
-          email: emailController.text,
-          phoneNumber: phoneNumberController.text,
-          userName: userNameController.text,
-          password: passwordController.text,
-          passwordConfirmation: passwordConfirmationController.text),
-    );
+        RegisterModel(
+            firstName: firstNameController.text,
+            lastName: lastNameController.text,
+            middleName: middleNameController.text,
+            occupation: occupationController.text,
+            fullName: fullNameController.text,
+            email: emailController.text,
+            phoneNumber: phoneNumberController.text,
+            userName: userNameController.text,
+            password: passwordController.text,
+            passwordConfirmation: passwordConfirmationController.text),
+        context);
   }
 
   @override
@@ -122,6 +125,12 @@ class _RegisterState extends State<Register> {
                                   label: 'Firstname',
                                   prefixIcon: Icon(Icons.person_2_outlined),
                                   keyboardType: TextInputType.name,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This Field cant be empty';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
@@ -130,6 +139,12 @@ class _RegisterState extends State<Register> {
                                   hintText: 'Lastname',
                                   prefixIcon: Icon(Icons.person_2_outlined),
                                   keyboardType: TextInputType.name,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This Field cant be empty';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
@@ -138,6 +153,12 @@ class _RegisterState extends State<Register> {
                                   hintText: 'Middlename',
                                   prefixIcon: Icon(Icons.person_2_outlined),
                                   keyboardType: TextInputType.name,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This Field cant be empty';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
@@ -146,6 +167,12 @@ class _RegisterState extends State<Register> {
                                   hintText: 'Occupation',
                                   prefixIcon: Icon(Icons.person_2_outlined),
                                   keyboardType: TextInputType.name,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This Field cant be empty';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
@@ -154,6 +181,12 @@ class _RegisterState extends State<Register> {
                                   hintText: 'Fullname',
                                   prefixIcon: Icon(Icons.person_2_outlined),
                                   keyboardType: TextInputType.name,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This Field cant be empty';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
@@ -162,6 +195,17 @@ class _RegisterState extends State<Register> {
                                   hintText: 'Email',
                                   prefixIcon: Icon(Icons.mail_outline_outlined),
                                   keyboardType: TextInputType.emailAddress,
+                                  validator: (value) {
+                                    RegExp emailRegExp = RegExp(
+                                        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
+
+                                    if (value == null || value.isEmpty) {
+                                      return 'Email can\'t be empty';
+                                    } else if (!emailRegExp.hasMatch(value)) {
+                                      return 'Enter a correct email';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
@@ -170,6 +214,12 @@ class _RegisterState extends State<Register> {
                                   hintText: ' Enter Phone Number',
                                   prefixIcon: Icon(Icons.phone),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This Field cant be empty';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
@@ -178,6 +228,12 @@ class _RegisterState extends State<Register> {
                                   hintText: 'Unique Username',
                                   prefixIcon: Icon(Icons.person_2_outlined),
                                   keyboardType: TextInputType.emailAddress,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This Field cant be empty';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 15),
                                 MyInputField(
@@ -187,6 +243,12 @@ class _RegisterState extends State<Register> {
                                   isPassword: true,
                                   prefixIcon: Icon(Icons.lock_outline_sharp),
                                   keyboardType: TextInputType.visiblePassword,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This Field cant be empty';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 20),
                                 MyInputField(
@@ -196,6 +258,12 @@ class _RegisterState extends State<Register> {
                                   isPassword: true,
                                   prefixIcon: Icon(Icons.lock_outline_sharp),
                                   keyboardType: TextInputType.visiblePassword,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This Field cant be empty';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 20),
                                 ButtonWidget(
@@ -203,8 +271,6 @@ class _RegisterState extends State<Register> {
                                     if (_register_formKey.currentState!
                                         .validate()) {
                                       registerUser();
-                                      print("User Registered");
-                                      Navigator.pushNamed(context, '/verify');
                                     }
                                   },
                                   text: 'Register',
@@ -228,7 +294,7 @@ class _RegisterState extends State<Register> {
                           const Text('Already  have an account? '),
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, '/login');
+                              Navigator.pushNamed(context, appRoutes.login);
                             },
                             child: Text(
                               'Login Here',

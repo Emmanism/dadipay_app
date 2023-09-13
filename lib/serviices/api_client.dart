@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:dadipay_app/models/user_model.dart';
 import 'package:dadipay_app/providers/user_provider.dart';
+import 'package:dadipay_app/routes/app_routes.dart';
 import 'package:dadipay_app/screens/home_web_view.dart';
 import 'package:dadipay_app/screens/logins/forgot_password/models/forgot_password_model.dart';
 import 'package:dadipay_app/screens/logins/models/login_model.dart';
@@ -21,7 +22,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
   //Route API For Registration
-  Future<void> Register(RegisterModel user) async {
+
+  final AppRoutes appRoutes = AppRoutes();
+  Future<void> Register(RegisterModel user, BuildContext context) async {
     try {
       UserModel userModel = UserModel(
         id: '',
@@ -48,6 +51,14 @@ class ApiClient {
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         print(' Registered successful: $responseData');
+        httpErrorHandle(
+            response: response,
+            context: context,
+            onSuccess: () {
+              utils.viewShowDialog(
+                  context, 'Account Created Succesfully Proceed to Verify OTP',
+                  isSuccess: true);
+            });
       } else {
         print(response.body);
         print(response.statusCode);
@@ -56,7 +67,7 @@ class ApiClient {
         throw Exception('Server error');
       }
     } catch (e) {
-      print(e.toString());
+      utils.showSnackBar(context, e.toString());
     }
   }
 
@@ -74,7 +85,7 @@ class ApiClient {
         print(' Login successful: $responseData');
         //After Succesfull Request
         //Navigate to HomeWebView
-        Navigator.pushNamed(context, '/home');
+        Navigator.pushNamed(context, appRoutes.home);
       } else {
         print(response.body);
         print(response.statusCode);
@@ -85,7 +96,8 @@ class ApiClient {
     } catch (e) {}
   }
 
-  Future<void> ForgotPassword(ForgotPasswordModel user) async {
+  Future<void> ForgotPassword(
+      ForgotPasswordModel user, BuildContext context) async {
     try {
       http.Response response = await http.post(
           Uri.parse('$baseUrl/forgetpassword'),
@@ -96,16 +108,22 @@ class ApiClient {
           });
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        print(' OTP Seent  successful: $responseData');
-      } else {
+        print(' OTP Sent  successful: $responseData');
+        httpErrorHandle(
+            response: response,
+            context: context,
+            onSuccess: () {
+              utils.showSnackBar(context, 'OTP Sent Succesfully');
+            });
+      } else if (response.statusCode == 400) {
+        final responseData = json.decode(response.body);
         print(response.body);
         print(response.statusCode);
         print(user.toJson());
+        utils.showSnackBar(context, json.decode('$responseData')['msg']);
         print('Server error: ${response}');
         throw Exception('Server error');
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 }

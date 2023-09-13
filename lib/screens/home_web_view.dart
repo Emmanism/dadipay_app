@@ -22,7 +22,7 @@ class _HomeWebViewState extends State<HomeWebView> {
           body: InAppWebView(
         initialUrlRequest: URLRequest(
             url: Uri.parse(
-              'https://app.dadipay.co/',
+              'https://app.dadipay.co/android.php?login_token=2507|dVefvYbijC4nFeCm63nPMYL6UFAbmp2HNp2xNQqu',
             ),
             headers: {
               'Accept': 'application/vnd.api+json',

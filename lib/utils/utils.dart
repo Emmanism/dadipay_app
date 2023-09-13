@@ -1,8 +1,10 @@
 // ignore_for_file: unused_element
 
+import 'package:dadipay_app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 
 class Utils {
+  final AppRoutes appRoutes = AppRoutes();
   void showSnackBar(BuildContext context, String text) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -34,7 +36,7 @@ class Utils {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.popAndPushNamed(context, appRoutes.verify);
               },
               child: Text(
                 'OK',

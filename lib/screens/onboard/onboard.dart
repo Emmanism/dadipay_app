@@ -1,5 +1,6 @@
 // ignore_for_file: use_full_hex_values_for_flutter_colors
 
+import 'package:dadipay_app/routes/app_routes.dart';
 import 'package:dadipay_app/screens/onboard/controller/onboard_controller.dart';
 import 'package:dadipay_app/utils/global_variables.dart';
 import 'package:dadipay_app/widgets/button_widget.dart';
@@ -15,6 +16,7 @@ class Onboard extends StatefulWidget {
 }
 
 final controller = OnboardController();
+final AppRoutes appRoutes = AppRoutes();
 int currentPageIndex = 0;
 final pageController = PageController(initialPage: currentPageIndex);
 
@@ -44,7 +46,7 @@ class _OnboardState extends State<Onboard> {
           TextButton(
             onPressed: () async {
               await _storeOnboardInfo();
-              Navigator.pushNamed(context, '/login');
+              Navigator.pushNamed(context, appRoutes.login);
             },
             child: const Text(
               'Skip',
@@ -103,7 +105,7 @@ class _OnboardState extends State<Onboard> {
                     onPress: () async {
                       if (currentPageIndex == 2) {
                         await _storeOnboardInfo();
-                        Navigator.pushNamed(context, '/login');
+                        Navigator.pushNamed(context, appRoutes.login);
                       }
                       pageController.nextPage(
                           duration: const Duration(milliseconds: 300),
