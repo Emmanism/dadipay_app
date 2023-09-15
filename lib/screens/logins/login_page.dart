@@ -9,6 +9,7 @@ import 'package:dadipay_app/widgets/button_widget.dart';
 import 'package:dadipay_app/widgets/my_input_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const MaterialColor black = MaterialColor(
   0xFF000000,
@@ -42,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
   final AppRoutes appRoutes = AppRoutes();
   final Utils utils = Utils();
   final formResult = {};
+  final  pwaUrl = Uri.parse('https://app.dadipay.co/android.php?login_token=2507|dVefvYbijC4nFeCm63nPMYL6UFAbmp2HNp2xNQqu');
 
   @override
   void initState() {
@@ -54,12 +56,22 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
     super.dispose();
   }
+  
+  // Method to open the PWA URL
+  Future<void> _openPwaUrl() async {
+    if (await canLaunchUrl(pwaUrl)) {
+      await launchUrl(pwaUrl);
+    } else {
+      print('Could not launch PWA: $pwaUrl');
+    }
+  }
 
   void loginUser() {
     apiClient.Login(
         LogInModel(
             email: emailController.text, password: passwordController.text),
         context);
+       _openPwaUrl();
   }
 
   @override
@@ -134,6 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                                       loginUser();
                                       utils.showSnackBar(
                                           context, 'Login Succesfully');
+                                      Navigator.pushNamed(context, appRoutes.home);
                                     }
                                   },
                                   text: 'Login',

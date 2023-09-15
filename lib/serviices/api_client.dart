@@ -126,4 +126,35 @@ class ApiClient {
       }
     } catch (e) {}
   }
+
+    Future<bool> verifyOTP(String enteredOTP,String otppin) async {
+    final DateTime now = DateTime.now();
+    final String timestamp = now.toUtc().toIso8601String();
+    final String userId = 'user12345'; // Replace with the actual user's ID
+    final String otprefpin = '$userId-$timestamp';
+    try {
+      http.Response response = await http.get(
+        Uri.parse('$baseUrl/api/verifyotp/$otprefpin/$otppin/user'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // OTP verification successful
+        final responseData = json.decode(response.body);
+        // Parse the response data to check if OTP verification was successful
+        final bool isVerified = responseData['isVerified'];
+        return isVerified;
+      } else {
+        // OTP verification failed
+        return false;
+      }
+    } catch (e) {
+      // Handle any exceptions or errors here
+      print('Error verifying OTP: $e');
+      return false;
+    }
+  }
 }

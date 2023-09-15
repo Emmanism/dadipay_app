@@ -14,6 +14,8 @@ class HomeWebView extends StatefulWidget {
 class _HomeWebViewState extends State<HomeWebView> {
   //initialised the webview Controller
   InAppWebViewController? _webViewController;
+    double _progress = 0;
+   
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +30,17 @@ class _HomeWebViewState extends State<HomeWebView> {
               'Accept': 'application/vnd.api+json',
               'Content-Type': 'application/json',
             }),
-        onWebViewCreated: (controller) {
-          _webViewController = controller;
-        },
+       onWebViewCreated: (InAppWebViewController controller) {
+                _webViewController = controller;
+              },
+              onProgressChanged: (InAppWebViewController controller, int progress) {
+                setState(() {
+                  _progress = progress / 100;
+                });
+              },
+        
       )),
+      
     );
   }
 }

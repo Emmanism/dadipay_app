@@ -13,6 +13,15 @@ class VerifyOTP extends StatefulWidget {
   State<VerifyOTP> createState() => _VeriryOTPState();
 }
 
+ final TextEditingController otpController = TextEditingController();
+
+ 
+  @override
+  void dispose() {
+    otpController.dispose();
+  }
+  
+
 class _VeriryOTPState extends State<VerifyOTP> {
   @override
   Widget build(BuildContext context) {
@@ -89,7 +98,36 @@ class _VeriryOTPState extends State<VerifyOTP> {
               height: 10,
             ),
             ButtonWidget(
-              onPress: () => {},
+               onPress: () {
+           String enteredOTP = otpController.text;
+           //  Check if the entered OTP matches the one sent to the user
+         String sentOTP = "12345"; // Replace with the actual OTP sent to the user
+              if (enteredOTP == sentOTP) {
+           // If the OTP is valid, you can proceed with user verification
+          // You can navigate to the next screen or perform other actions here
+          Navigator.of(context).pushReplacementNamed('/home'); // Example navigation
+        } else {
+         // If the OTP is invalid, show an error message to the user
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Invalid OTP"),
+            content: Text("The entered OTP is incorrect. Please try again."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  },
+
               text: 'Verify OTP',
             )
           ],
