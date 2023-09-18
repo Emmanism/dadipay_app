@@ -71,32 +71,6 @@ class ApiClient {
     }
   }
 
-  //Login Routes Api
-  Future<void> Login(LogInModel user, BuildContext context) async {
-    try {
-      http.Response response = await http.post(Uri.parse('$baseUrl/login'),
-          body: jsonEncode(user.toJson()),
-          headers: {
-            'Accept': 'application/vnd.api+json',
-            'Content-Type': 'application/json',
-          });
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        final userToken = responseData['token'] as String?;
-        print('Login successful: $userToken');
-        // Return the user token
-        print(' Login successful: $responseData');
-        //After Succesfull Request
-      } else {
-        print(response.body);
-        print(response.statusCode);
-        print(user.toJson());
-        print('Server error: ${response}');
-        throw Exception('Server error');
-      }
-    } catch (e) {}
-  }
-
   Future<void> ForgotPassword(
       ForgotPasswordModel user, BuildContext context) async {
     try {

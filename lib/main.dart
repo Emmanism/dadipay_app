@@ -3,7 +3,6 @@
 import 'package:dadipay_app/routes/app_routes.dart';
 import 'package:dadipay_app/screens/home_web_view.dart';
 import 'package:dadipay_app/screens/logins/forgot_password/forgot_password.dart';
-import 'package:dadipay_app/screens/logins/login_page.dart';
 import 'package:dadipay_app/screens/logins/register/register.dart';
 import 'package:dadipay_app/screens/logins/verify_otp.dart';
 import 'package:dadipay_app/screens/onboard/onboard.dart';
@@ -20,7 +19,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  isViewed = preferences.getBool('isViewed') ?? true;
+  isViewed = preferences.getBool('isViewed') ?? false;
   await preferences.setBool('isViewed', true);
   runApp(MyApp());
 }
@@ -34,14 +33,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Dadipay',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: KprimaryColor),
-        useMaterial3: true,
-      ),
-      onGenerateRoute: appRoutes.controller,
-      initialRoute: isViewed == false ? appRoutes.onboard : appRoutes.test,
-    );
+        title: 'Dadipay_app',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: KprimaryColor),
+          useMaterial3: true,
+        ),
+        onGenerateRoute: appRoutes.controller,
+        initialRoute: isViewed == false ? appRoutes.onboard : appRoutes.login);
   }
 }
