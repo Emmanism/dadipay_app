@@ -82,10 +82,11 @@ class ApiClient {
           });
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
+        final userToken = responseData['token'] as String?;
+        print('Login successful: $userToken');
+        // Return the user token
         print(' Login successful: $responseData');
         //After Succesfull Request
-        //Navigate to HomeWebView
-        Navigator.pushNamed(context, appRoutes.home);
       } else {
         print(response.body);
         print(response.statusCode);
@@ -127,10 +128,10 @@ class ApiClient {
     } catch (e) {}
   }
 
-    Future<bool> verifyOTP(String enteredOTP,String otppin) async {
+  Future<bool> verifyOTP(String enteredOTP, String otppin) async {
     final DateTime now = DateTime.now();
     final String timestamp = now.toUtc().toIso8601String();
-    final String userId = 'user12345'; // Replace with the actual user's ID
+    final String userId = '';
     final String otprefpin = '$userId-$timestamp';
     try {
       http.Response response = await http.get(

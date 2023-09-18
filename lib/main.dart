@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       onGenerateRoute: appRoutes.controller,
-      initialRoute: isViewed == false ? appRoutes.onboard : appRoutes.login,
+      initialRoute: isViewed == false ? appRoutes.onboard : appRoutes.test,
     );
   }
 }

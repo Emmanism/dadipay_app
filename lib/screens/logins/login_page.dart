@@ -43,7 +43,8 @@ class _LoginPageState extends State<LoginPage> {
   final AppRoutes appRoutes = AppRoutes();
   final Utils utils = Utils();
   final formResult = {};
-  final  pwaUrl = Uri.parse('https://app.dadipay.co/android.php?login_token=2507|dVefvYbijC4nFeCm63nPMYL6UFAbmp2HNp2xNQqu');
+
+  // final  pwaUrl = Uri.parse('https://app.dadipay.co/android.php?login_token=2507|dVefvYbijC4nFeCm63nPMYL6UFAbmp2HNp2xNQqu');
 
   @override
   void initState() {
@@ -56,22 +57,37 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
     super.dispose();
   }
-  
-  // Method to open the PWA URL
+
+  /* // Method to open the PWA URL
   Future<void> _openPwaUrl() async {
     if (await canLaunchUrl(pwaUrl)) {
       await launchUrl(pwaUrl);
     } else {
       print('Could not launch PWA: $pwaUrl');
     }
+  }  */
+
+  // Declare a global variable to store the user login token
+  String userLoginToken = '';
+
+  // Function to update the user login token
+  void updateUserLoginToken(String token) {
+    setState(() {
+      userLoginToken = token;
+    });
   }
 
-  void loginUser() {
+  void loginUser() async {
     apiClient.Login(
         LogInModel(
             email: emailController.text, password: passwordController.text),
         context);
-       _openPwaUrl();
+    //  _openPwaUrl();
+    // Update the user login token after login (if applicable)
+    updateUserLoginToken(
+        userLoginToken); // Replace with your logic to obtain the user login token
+    utils.showSnackBar(context, 'Login Successfully');
+    Navigator.pushNamed(context, appRoutes.home);
   }
 
   @override
@@ -144,9 +160,6 @@ class _LoginPageState extends State<LoginPage> {
                                     if (_login_formKey.currentState!
                                         .validate()) {
                                       loginUser();
-                                      utils.showSnackBar(
-                                          context, 'Login Succesfully');
-                                      Navigator.pushNamed(context, appRoutes.home);
                                     }
                                   },
                                   text: 'Login',
