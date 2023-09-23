@@ -123,6 +123,17 @@
         }
       });
     });
+
+    window.flutter_inappwebview._callHandler('closeWebView', null, function(result) {
+    // Handle the result if needed
+    window.close(); // Close the WebView
+  });
+
+  // Handler to navigate to the login page
+  window.flutter_inappwebview._callHandler('navigateToLogin', null, function(result) {
+    // Handle the result if needed
+    window.location.href = '/login'; // Navigate to the login page
+  });
   </script>
 
 

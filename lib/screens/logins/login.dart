@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:dadipay_app/screens/logins/models/login_model.dart';
 import 'package:dadipay_app/screens/onboard/onboard.dart';
+import 'package:dadipay_app/utils/error_handling.dart';
 import 'package:dadipay_app/utils/global_variables.dart';
 import 'package:dadipay_app/widgets/button_widget.dart';
 import 'package:dadipay_app/widgets/my_input_field.dart';
@@ -57,11 +59,10 @@ class _LoginState extends State<Login> {
         print(' Responses Data: $responseData');
         //After Succesfull Request
       } else {
-        print(response.body);
+        final errorResponse = json.decode(response.body)['message'];
+        utils.showSnackBar(context, errorResponse);
         print(response.statusCode);
         print(user.toJson());
-        print('Server error: ${response}');
-        throw Exception('Server error');
       }
     } catch (e) {}
   }
@@ -156,6 +157,9 @@ class _LoginState extends State<Login> {
                                     if (_login_formKey.currentState!
                                         .validate()) {
                                       loginUser();
+                                    } else {
+                                      utils.showSnackBar(
+                                          context, 'Check Field');
                                     }
                                   },
                                   text: 'Login',
@@ -210,12 +214,111 @@ class _LoginState extends State<Login> {
   }
 }
 
-class WebViewPage extends StatelessWidget {
+class WebViewPage extends StatefulWidget {
   final String? userToken;
 
   WebViewPage({required this.userToken});
+
+  @override
+  State<WebViewPage> createState() => _WebViewPageState();
+}
+
+class _WebViewPageState extends State<WebViewPage> {
   InAppWebViewController? _webViewController;
+
   double _progress = 0;
+  late Timer _tokenCheckTimer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Start a timer to periodically check the token's validity
+    _tokenCheckTimer = Timer.periodic(Duration(seconds: 5), (timer) {
+      // Check if the token is still valid by making a request to the backend
+      checkTokenValidity();
+    });
+  }
+
+  @override
+  void dispose() {
+    _tokenCheckTimer.cancel(); // Cancel the timer when the widget is disposed
+    super.dispose();
+  }
+
+/*   Future<void> checkTokenValidity(String userToken) async {
+  try { 
+    final response = await http.get(
+      Uri.parse('$baseUrl/me'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $userToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+       final responseData = json.decode(response.body);
+       final isValid = responseData['isValid'];
+       
+        if (!isValid) {
+          // Token is no longer valid, navigate to the login page
+          Navigator.of(context).pushReplacementNamed(appRoutes.login);
+        }
+    } else if (response.statusCode == 401 || response.statusCode == 403) {
+        Navigator.pushReplacementNamed(context, appRoutes.login);
+    } else {
+          // Token is no longer valid, close WebView and navigate to login page
+          window.flutter_inappwebview.callHandler('closeWebView'); // Close WebView
+          window.flutter_inappwebview.callHandler('navigateToLogin'); // Navigate to login page
+    }
+  } catch (e) {
+     // Handle any exceptions or network errors here.
+    print('Error checking token validity: $e');
+  }
+}
+ */
+
+//  in DART js code is put inside a triple string ,check the index.html for more details
+  void checkTokenValidity() {
+    final script = '''
+    // JavaScript code to check token validity (example)
+
+    // Define a function to check token validity
+    function checkToken() {
+      //  HTTP request to check token validity
+      fetch('$baseUrl/me', {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${widget.userToken}'
+           },
+       })
+      .then(response => {
+        if (response.status === 200) {
+          // Token is still valid
+           displayMessage('Token is valid.');
+        } else {
+          // Token is no longer valid, close WebView and navigate to login page
+          window.flutter_inappwebview.callHandler('closeWebView'); // Close WebView
+          window.flutter_inappwebview.callHandler('navigateToLogin'); // Navigate to login page
+        }
+      })
+      .catch(error => {
+        // Handle any errors here
+        console.error('Error checking token validity: ' + error);
+      });
+    }
+
+    function displayMessage(message) {
+      alert(message);
+    }
+
+    // Periodically check token validity (adjust the interval as needed)
+    setInterval(checkToken, 5000); // Check every 5 seconds (example)
+  ''';
+
+    // Inject the JavaScript code into the WebView
+    _webViewController?.evaluateJavascript(source: script);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -223,7 +326,7 @@ class WebViewPage extends StatelessWidget {
       body: InAppWebView(
         initialUrlRequest: URLRequest(
             url: Uri.parse(
-              'https://app.dadipay.co/android.php?login_token=$userToken',
+              'https://app.dadipay.co/android.php?login_token=${widget.userToken}',
             ),
             headers: {
               'Accept': 'application/vnd.api+json',
