@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:dadipay_app/screens/logins/register/model/register_model.dart';
+import 'package:dadipay_app/screens/onboard/onboard.dart';
 import 'package:dadipay_app/utils/error_handling.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -66,20 +67,14 @@ class _VeriryOTPState extends State<VerifyOTP> {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        final bool isOTPValid = responseData['data'];
         final String sms_pinId = responseData['data']['user']['sms_pinId'];
-
-        if (isOTPValid) {
-          setState(() {
-            otprefpin = sms_pinId;
-            print(otprefpin);
-            // Update the userId in your state
-          });
-          Navigator.of(context).pushReplacementNamed('/home');
-        } else {
-          showErrorDialog(
-              'Invalid OTP', 'The entered OTP is incorrect. Please try again.');
-        }
+        print(sms_pinId);
+        setState(() {
+          otprefpin = sms_pinId;
+          print(otprefpin);
+          // Update the userId in your state
+        });
+        Navigator.of(context).pushReplacementNamed(appRoutes.login);
       } else {
         showErrorDialog('Server Error',
             'An error occurred while verifying the OTP. Please try again.');
@@ -183,7 +178,9 @@ class _VeriryOTPState extends State<VerifyOTP> {
             ),
             TextButton(
               onPressed: () {
-                resendOtp();
+                setState(() {
+                  resendOtp();
+                });
               },
               child: Text(
                 'Resend Otp',
@@ -201,7 +198,10 @@ class _VeriryOTPState extends State<VerifyOTP> {
               onPress: () {
                 String otppin = otpController.text;
                 if (_formKey.currentState!.validate()) {
-                  verifyOTP(otppin);
+                  print(otppin);
+                  setState(() {
+                    verifyOTP(otppin);
+                  });
                 }
               },
               text: 'Verify OTP',
