@@ -24,6 +24,7 @@ class ApiClient {
   //Route API For Registration
 
   final AppRoutes appRoutes = AppRoutes();
+  /*
   Future<void> Register(RegisterModel user, BuildContext context) async {
     try {
       UserModel userModel = UserModel(
@@ -50,6 +51,10 @@ class ApiClient {
           });
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
+        final sms_pin = responseData['data']['user']['sms_pinId'];
+        final u_id = responseData['data']['user']['u_id'];
+        print(sms_pin);
+        print(u_id);
         print(' Registered successful: $responseData');
         httpErrorHandle(
             response: response,
@@ -69,6 +74,7 @@ class ApiClient {
       utils.showSnackBar(context, e.toString());
     }
   }
+  */
 
   Future<void> ForgotPassword(
       ForgotPasswordModel user, BuildContext context) async {

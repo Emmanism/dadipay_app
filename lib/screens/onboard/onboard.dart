@@ -28,24 +28,15 @@ void dispose() {
 @override
 void initState() {}
 
-_storeOnboardInfo() async {
-  bool isViewed = true;
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  isViewed = preferences.getBool('viewed') ?? false;
-  await preferences.setBool('viewed', isViewed);
-}
-
 class _OnboardState extends State<Onboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         actions: [
           TextButton(
-            onPressed: () async {
-              await _storeOnboardInfo();
+            onPressed: () {
               Navigator.pushNamed(context, appRoutes.login);
             },
             child: const Text(
@@ -58,68 +49,65 @@ class _OnboardState extends State<Onboard> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Expanded(
-              flex: 2,
-              child: PageView.builder(
-                itemCount: controller.screens.length,
-                controller: pageController,
-                onPageChanged: (int value) {
-                  setState(() {
-                    currentPageIndex = value;
-                  });
-                },
-                itemBuilder: (_, index) {
-                  return Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                    child: OnboardContent(
-                        image: controller.screens[index].imageAsset,
-                        text: controller.screens[index].text,
-                        desc: controller.screens[index].desc),
-                  );
-                },
+      body: Column(
+        children: [
+          Expanded(
+            flex: 2,
+            child: PageView.builder(
+              itemCount: controller.screens.length,
+              controller: pageController,
+              onPageChanged: (int value) {
+                setState(() {
+                  currentPageIndex = value;
+                });
+              },
+              itemBuilder: (_, index) {
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  child: OnboardContent(
+                      image: controller.screens[index].imageAsset,
+                      text: controller.screens[index].text,
+                      desc: controller.screens[index].desc),
+                );
+              },
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      controller.screens.length,
+                      (index) => buildDot(index: index),
+                    ),
+                  ),
+                  const Spacer(
+                    flex: 2,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ButtonWidget(
+                    text: 'Next ',
+                    onPress: () async {
+                      if (currentPageIndex == 2) {
+                        Navigator.pushNamed(context, appRoutes.login);
+                      }
+                      pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.bounceIn);
+                    },
+                  ),
+                  const Spacer()
+                ],
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        controller.screens.length,
-                        (index) => buildDot(index: index),
-                      ),
-                    ),
-                    const Spacer(
-                      flex: 2,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ButtonWidget(
-                      text: 'Next ',
-                      onPress: () async {
-                        if (currentPageIndex == 2) {
-                          await _storeOnboardInfo();
-                          Navigator.pushNamed(context, appRoutes.login);
-                        }
-                        pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.bounceIn);
-                      },
-                    ),
-                    const Spacer()
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

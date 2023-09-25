@@ -1,5 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
+/*
 import 'package:dadipay_app/screens/logins/register/model/register_model.dart';
 import 'package:dadipay_app/screens/onboard/onboard.dart';
 import 'package:dadipay_app/utils/error_handling.dart';
@@ -49,13 +49,12 @@ class _VeriryOTPState extends State<VerifyOTP> {
   }
 
   Future<void> verifyOTP(String otppin) async {
-    final DateTime now = DateTime.now();
-    final String timestamp = now.toUtc().toIso8601String();
     //final String otprefpin = '$userId-$timestamp';
-    String otprefpin = '';
+    String smsPin_id = '';
+    String userId = '';
 
     try {
-      final url = '$baseUrl/api/verifyotp/$otprefpin/$otppin/user';
+      final url = '$baseUrl/api/verifyotp/$smsPin_id/$otppin/$userId/user';
 
       final response = await http.get(
         Uri.parse(url),
@@ -68,10 +67,13 @@ class _VeriryOTPState extends State<VerifyOTP> {
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         final String sms_pinId = responseData['data']['user']['sms_pinId'];
+        final String u_id = responseData['data']['user']['u_id'];
         print(sms_pinId);
         setState(() {
-          otprefpin = sms_pinId;
-          print(otprefpin);
+          smsPin_id = sms_pinId;
+          userId = u_id;
+          print(sms_pinId);
+          print(userId);
           // Update the userId in your state
         });
         Navigator.of(context).pushReplacementNamed(appRoutes.login);
@@ -211,4 +213,5 @@ class _VeriryOTPState extends State<VerifyOTP> {
       ),
     ));
   }
-}
+} 
+*/

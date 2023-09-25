@@ -1,13 +1,19 @@
-// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names, must_be_immutable
 
+import 'dart:convert';
+
+import 'package:dadipay_app/models/user_model.dart';
 import 'package:dadipay_app/routes/app_routes.dart';
 import 'package:dadipay_app/screens/logins/register/model/register_model.dart';
+import 'package:dadipay_app/screens/onboard/onboard.dart';
 import 'package:dadipay_app/serviices/api_client.dart';
 import 'package:dadipay_app/utils/error_handling.dart';
 import 'package:dadipay_app/utils/global_variables.dart';
 import 'package:dadipay_app/widgets/button_widget.dart';
 import 'package:dadipay_app/widgets/my_input_field.dart';
+import 'package:dadipay_app/widgets/opt_field.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 const MaterialColor black = MaterialColor(
   0xFF000000,
@@ -34,7 +40,8 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final _register_formKey = GlobalKey<FormState>();
-
+  String? sms_pin_id;
+  String? u_id;
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -71,8 +78,66 @@ class _RegisterState extends State<Register> {
     super.dispose();
   }
 
+  Future<void> Register(RegisterModel user, BuildContext context) async {
+    try {
+      UserModel userModel = UserModel(
+        id: '',
+        token: '',
+        smsPinId: '',
+        role: '',
+        firstName: user.firstName,
+        lastName: user.lastName,
+        middleName: user.middleName,
+        occupation: user.occupation,
+        userName: user.userName,
+        fullName: user.fullName,
+        phoneNumber: user.phoneNumber,
+        password: user.password,
+        email: user.email,
+        passwordConfirmation: user.passwordConfirmation,
+      );
+      http.Response response = await http.post(Uri.parse('$baseUrl/register'),
+          body: jsonEncode(userModel.toJson()),
+          headers: {
+            'Accept': 'application/vnd.api+json',
+            'Content-Type': 'application/json',
+          });
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final sms_pin = responseData['data']['user']['sms_pinId'] as String;
+        final id = responseData['data']['user']['u_id'] as String;
+        print(sms_pin_id);
+        print(u_id);
+        setState(() {
+          sms_pin_id = sms_pin;
+          u_id = id;
+        });
+        print(' Registered successful: $responseData');
+        print('Sms_Pin : $sms_pin_id');
+        print('User Id : $u_id');
+        _navigateToVerifyOtp();
+      } else {
+        final errorResponse = json.decode(response.body)['message'];
+        print(errorResponse);
+        print(user.toJson());
+        utils.showSnackBar(context, errorResponse);
+      }
+    } catch (e) {
+      utils.showSnackBar(context, e.toString());
+    }
+  }
+
+  void _navigateToVerifyOtp() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => VerifyOTP(
+        sms_pin_id: sms_pin_id as String,
+        u_id: u_id as String,
+      ),
+    ));
+  }
+
   void registerUser() {
-    apiClient.Register(
+    Register(
         RegisterModel(
             firstName: firstNameController.text,
             lastName: lastNameController.text,
@@ -314,5 +379,206 @@ class _RegisterState extends State<Register> {
         ),
       ),
     );
+  }
+}
+
+class VerifyOTP extends StatefulWidget {
+  String sms_pin_id;
+  String u_id;
+  VerifyOTP({
+    required this.sms_pin_id,
+    required this.u_id,
+  });
+
+  @override
+  State<VerifyOTP> createState() => _VeriryOTPState();
+}
+
+final TextEditingController otpController = TextEditingController();
+String otppin = '';
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+@override
+class _VeriryOTPState extends State<VerifyOTP> {
+  void showErrorDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> sendUserOtp() async {
+    //final String otprefpin = '$userId-$timestamp';
+
+    try {
+      final url =
+          '$baseOtpUrl/api/verifyotp/${widget.sms_pin_id}/$otppin/${widget.u_id}/user';
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+      print(url);
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        bool isVerified = responseData['verified'];
+        if (isVerified == true) {
+          Navigator.of(context).pushReplacementNamed(appRoutes.login);
+          print('Verified Successfully');
+        } else {
+          showErrorDialog('Verification Failed', 'An Error Occur');
+        }
+      } else {
+        showErrorDialog('Server Error',
+            'An error occurred while verifying the OTP. Please try again.');
+      }
+    } catch (e) {
+      showErrorDialog('Error',
+          'An error occurred. Please check your internet connection and try again.');
+    }
+  }
+
+  Future<void> resendOtp() async {
+    String phoneNumber = '';
+    final bool dndMode = true;
+
+    try {
+      final url = '$baseUrl/api/sendotpmobile/$phoneNumber/$dndMode';
+      http.Response response = await http.get(Uri.parse(url), headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      });
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final getPhoneNumber = responseData['data']['user']['phone_number'];
+        setState(() {
+          phoneNumber = getPhoneNumber;
+        });
+        utils.showSnackBar(context, 'OTP Resend Successfully');
+      } else {
+        showErrorDialog('OTP Resent Failure', 'Resent Otp not Send');
+      }
+    } catch (e) {
+      showErrorDialog('', 'Failed');
+    }
+  }
+
+  void userOtp() {
+    setState(() {
+      String entered = otpController.text;
+      otppin = entered;
+      print(" You Entered $otppin");
+      print('Msn pid ${widget.sms_pin_id}');
+      print('User Id ${widget.u_id}');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        child: Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: KprimaryColor,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Icon(
+                      Icons.arrow_back_ios_new,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Text(
+              'Verification Code Sent',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            Center(
+              child: Text(
+                'Your Verification Code OTP has been sent',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Form(
+              key: _formKey,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  OtpField(
+                    controller: otpController,
+                  ),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  resendOtp();
+                });
+              },
+              child: Text(
+                'Resend Otp',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            ButtonWidget(
+              onPress: () {
+                if (_formKey.currentState!.validate()) {
+                  userOtp();
+                  sendUserOtp();
+                }
+              },
+              text: 'Verify OTP',
+            )
+          ],
+        ),
+      ),
+    ));
   }
 }

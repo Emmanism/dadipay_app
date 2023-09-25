@@ -28,14 +28,14 @@ class AppRoutes {
         return MaterialPageRoute(builder: (context) => Onboard());
       case '/register':
         return MaterialPageRoute(builder: (context) => Register());
+
       case '/login':
         return MaterialPageRoute(builder: (context) => Login());
       case '/forgot':
         return MaterialPageRoute(builder: (context) => ForgotPassword());
       case '/home':
         return MaterialPageRoute(builder: (context) => HomeWebView());
-      case '/verify':
-        return MaterialPageRoute(builder: (context) => VerifyOTP());
+
       default:
         throw ("Undefined Routes");
     }
