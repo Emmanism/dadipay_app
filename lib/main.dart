@@ -4,7 +4,7 @@ import 'package:dadipay_app/routes/app_routes.dart';
 import 'package:dadipay_app/screens/home_web_view.dart';
 import 'package:dadipay_app/screens/logins/forgot_password/forgot_password.dart';
 import 'package:dadipay_app/screens/logins/register/register.dart';
-import 'package:dadipay_app/screens/logins/verify_otp.dart';
+
 import 'package:dadipay_app/screens/onboard/onboard.dart';
 import 'package:dadipay_app/utils/global_variables.dart';
 import 'package:flutter/material.dart';

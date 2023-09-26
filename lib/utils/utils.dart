@@ -13,6 +13,27 @@ class Utils {
     );
   }
 
+  //ShowError Dialog
+  void showErrorDialog(BuildContext context, String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void viewShowDialog(BuildContext context, String message,
       {bool isSuccess = true}) {
     Color dialogBackgroundColor = isSuccess ? Colors.green : Colors.red;

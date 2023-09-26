@@ -24,57 +24,6 @@ class ApiClient {
   //Route API For Registration
 
   final AppRoutes appRoutes = AppRoutes();
-  /*
-  Future<void> Register(RegisterModel user, BuildContext context) async {
-    try {
-      UserModel userModel = UserModel(
-        id: '',
-        token: '',
-        smsPinId: '',
-        role: '',
-        firstName: user.firstName,
-        lastName: user.lastName,
-        middleName: user.middleName,
-        occupation: user.occupation,
-        userName: user.userName,
-        fullName: user.fullName,
-        phoneNumber: user.phoneNumber,
-        password: user.password,
-        email: user.email,
-        passwordConfirmation: user.passwordConfirmation,
-      );
-      http.Response response = await http.post(Uri.parse('$baseUrl/register'),
-          body: jsonEncode(userModel.toJson()),
-          headers: {
-            'Accept': 'application/vnd.api+json',
-            'Content-Type': 'application/json',
-          });
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        final sms_pin = responseData['data']['user']['sms_pinId'];
-        final u_id = responseData['data']['user']['u_id'];
-        print(sms_pin);
-        print(u_id);
-        print(' Registered successful: $responseData');
-        httpErrorHandle(
-            response: response,
-            context: context,
-            onSuccess: () {
-              utils.viewShowDialog(
-                  context, 'Account Created Succesfully Proceed to Verify OTP',
-                  isSuccess: true);
-            });
-      } else {
-        final errorResponse = json.decode(response.body)['message'];
-        print(errorResponse);
-        print(user.toJson());
-        utils.showSnackBar(context, errorResponse);
-      }
-    } catch (e) {
-      utils.showSnackBar(context, e.toString());
-    }
-  }
-  */
 
   Future<void> ForgotPassword(
       ForgotPasswordModel user, BuildContext context) async {
@@ -95,12 +44,12 @@ class ApiClient {
             onSuccess: () {
               utils.showSnackBar(context, 'OTP Sent Succesfully');
             });
-      } else if (response.statusCode == 400) {
-        final responseData = json.decode(response.body);
+      } else {
+        final responseData = json.decode(response.body)['message'];
         print(response.body);
         print(response.statusCode);
+        utils.showSnackBar(context, json.decode('$responseData'));
         print(user.toJson());
-        utils.showSnackBar(context, json.decode('$responseData')['msg']);
         print('Server error: ${response}');
         throw Exception('Server error');
       }

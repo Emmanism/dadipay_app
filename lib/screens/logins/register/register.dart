@@ -42,6 +42,7 @@ class _RegisterState extends State<Register> {
   final _register_formKey = GlobalKey<FormState>();
   String? sms_pin_id;
   String? u_id;
+  String? phone_number;
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -106,15 +107,19 @@ class _RegisterState extends State<Register> {
         final responseData = json.decode(response.body);
         final sms_pin = responseData['data']['user']['sms_pinId'] as String;
         final id = responseData['data']['user']['u_id'] as String;
+        final phone = responseData['data']['user']['phone_number'] as String;
         print(sms_pin_id);
         print(u_id);
+        print(phone);
         setState(() {
           sms_pin_id = sms_pin;
           u_id = id;
+          phone_number = phone;
         });
         print(' Registered successful: $responseData');
         print('Sms_Pin : $sms_pin_id');
         print('User Id : $u_id');
+        print('Phone $phone_number');
         _navigateToVerifyOtp();
       } else {
         final errorResponse = json.decode(response.body)['message'];
@@ -132,6 +137,7 @@ class _RegisterState extends State<Register> {
       builder: (context) => VerifyOTP(
         sms_pin_id: sms_pin_id as String,
         u_id: u_id as String,
+        phone_number: phone_number as String,
       ),
     ));
   }
@@ -385,9 +391,11 @@ class _RegisterState extends State<Register> {
 class VerifyOTP extends StatefulWidget {
   String sms_pin_id;
   String u_id;
+  String phone_number;
   VerifyOTP({
     required this.sms_pin_id,
     required this.u_id,
+    required this.phone_number,
   });
 
   @override
@@ -455,22 +463,19 @@ class _VeriryOTPState extends State<VerifyOTP> {
   }
 
   Future<void> resendOtp() async {
-    String phoneNumber = '';
-    final bool dndMode = true;
-
+    bool dndMode = true;
     try {
-      final url = '$baseUrl/api/sendotpmobile/$phoneNumber/$dndMode';
+      final url = '$baseUrl/api/sendotpmobile/${widget.phone_number}/$dndMode';
       http.Response response = await http.get(Uri.parse(url), headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       });
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        final getPhoneNumber = responseData['data']['user']['phone_number'];
-        setState(() {
-          phoneNumber = getPhoneNumber;
-        });
-        utils.showSnackBar(context, 'OTP Resend Successfully');
+        final otpStatus = responseData['status'];
+        if (otpStatus == 200) {
+          utils.showSnackBar(context, 'OTP Resend Successfully');
+        }
       } else {
         showErrorDialog('OTP Resent Failure', 'Resent Otp not Send');
       }
@@ -519,7 +524,7 @@ class _VeriryOTPState extends State<VerifyOTP> {
               ],
             ),
             Text(
-              'Verification Code Sent',
+              'Verification Code ',
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 20,
@@ -527,7 +532,7 @@ class _VeriryOTPState extends State<VerifyOTP> {
             ),
             Center(
               child: Text(
-                'Your Verification Code OTP has been sent',
+                'Your Verification Code OTP has been sent ${widget.phone_number}',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.black,
@@ -550,11 +555,7 @@ class _VeriryOTPState extends State<VerifyOTP> {
               ),
             ),
             TextButton(
-              onPressed: () {
-                setState(() {
-                  resendOtp();
-                });
-              },
+              onPressed: resendOtp,
               child: Text(
                 'Resend Otp',
                 textAlign: TextAlign.center,

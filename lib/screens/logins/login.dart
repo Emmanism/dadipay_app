@@ -5,6 +5,7 @@ import 'package:dadipay_app/screens/logins/models/login_model.dart';
 import 'package:dadipay_app/screens/onboard/onboard.dart';
 import 'package:dadipay_app/utils/error_handling.dart';
 import 'package:dadipay_app/utils/global_variables.dart';
+import 'package:dadipay_app/utils/utils.dart';
 import 'package:dadipay_app/widgets/button_widget.dart';
 import 'package:dadipay_app/widgets/my_input_field.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
   final _login_formKey = GlobalKey<FormState>();
 
   String? userToken;
@@ -54,17 +56,20 @@ class _LoginState extends State<Login> {
           userToken = token;
         });
         print('Token : $userToken');
+        utils.showSnackBar(context, 'User Login Succesfully');
         _navigateToWebView();
         // Return the user token
         print(' Responses Data: $responseData');
         //After Succesfull Request
       } else {
         final errorResponse = json.decode(response.body)['message'];
-        utils.showSnackBar(context, errorResponse);
+        utils.showErrorDialog(context, 'Error', errorResponse);
         print(response.statusCode);
         print(user.toJson());
       }
-    } catch (e) {}
+    } catch (e) {
+      utils.showErrorDialog(context, 'Error', e.toString());
+    }
   }
 
   void _navigateToWebView() {

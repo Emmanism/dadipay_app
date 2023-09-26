@@ -3,7 +3,6 @@ import 'package:dadipay_app/screens/logins/forgot_password/forgot_password.dart'
 import 'package:dadipay_app/screens/logins/login.dart';
 
 import 'package:dadipay_app/screens/logins/register/register.dart';
-import 'package:dadipay_app/screens/logins/verify_otp.dart';
 import 'package:dadipay_app/screens/onboard/onboard.dart';
 import 'package:flutter/material.dart';
 
