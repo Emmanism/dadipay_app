@@ -465,7 +465,8 @@ class _VeriryOTPState extends State<VerifyOTP> {
   Future<void> resendOtp() async {
     bool dndMode = true;
     try {
-      final url = '$baseUrl/api/sendotpmobile/${widget.phone_number}/$dndMode';
+      final url =
+          '$baseOtpUrl/api/sendotpmobile/${widget.phone_number}/$dndMode';
       http.Response response = await http.get(Uri.parse(url), headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -474,11 +475,14 @@ class _VeriryOTPState extends State<VerifyOTP> {
         final responseData = json.decode(response.body);
         final otpStatus = responseData['status'];
         if (otpStatus == 200) {
-          utils.showSnackBar(context, 'OTP Resend Successfully');
+          utils.showErrorDialog(
+              context, 'OTP Resend Successfully', 'Kindly Check Your Inbox');
         }
       } else {
-        showErrorDialog('OTP Resent Failure', 'Resent Otp not Send');
+        showErrorDialog(
+            'OTP Resent Failure', 'Resent Otp not Send Due Server Failure');
       }
+      print(url);
     } catch (e) {
       showErrorDialog('', 'Failed');
     }
@@ -555,7 +559,9 @@ class _VeriryOTPState extends State<VerifyOTP> {
               ),
             ),
             TextButton(
-              onPressed: resendOtp,
+              onPressed: () {
+                resendOtp();
+              },
               child: Text(
                 'Resend Otp',
                 textAlign: TextAlign.center,
