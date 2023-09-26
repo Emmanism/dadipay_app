@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, non_constant_identifier_names, must_be_immutable
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dadipay_app/models/user_model.dart';
@@ -403,11 +404,44 @@ class VerifyOTP extends StatefulWidget {
 }
 
 final TextEditingController otpController = TextEditingController();
-String otppin = '';
+String? otppin;
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+int _resendCountDown = 0;
+Timer? _resendTimer;
 
 @override
 class _VeriryOTPState extends State<VerifyOTP> {
+  @override
+  void initState() {
+    super.initState();
+    // Start the resend cooldown timer when the screen initializes.
+    startResendCooldown();
+  }
+
+  @override
+  void dispose() {
+    // Cancel the timer to avoid memory leaks.
+    _resendTimer?.cancel();
+    super.dispose();
+  }
+
+  void startResendCooldown() {
+    // Start a 5-minute countdown timer.
+    const int countDownDurationInSeconds = 5 * 60;
+    _resendCountDown = countDownDurationInSeconds;
+
+    _resendTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _resendCountDown--;
+
+        if (_resendCountDown == 0) {
+          // The cooldown period is over; you can now allow the user to resend OTP.
+          timer.cancel();
+        }
+      });
+    });
+  }
+
   void showErrorDialog(String title, String message) {
     showDialog(
       context: context,
@@ -430,10 +464,11 @@ class _VeriryOTPState extends State<VerifyOTP> {
 
   Future<void> sendUserOtp() async {
     //final String otprefpin = '$userId-$timestamp';
+    final String enteredOtp = otppin as String;
 
     try {
       final url =
-          '$baseOtpUrl/api/verifyotp/${widget.sms_pin_id}/$otppin/${widget.u_id}/user';
+          '$baseOtpUrl/api/verifyotp/${widget.sms_pin_id}/$enteredOtp/${widget.u_id}/user';
 
       final response = await http.get(
         Uri.parse(url),
@@ -442,7 +477,6 @@ class _VeriryOTPState extends State<VerifyOTP> {
           'Content-Type': 'application/json',
         },
       );
-      print(url);
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         bool isVerified = responseData['verified'];
@@ -455,6 +489,7 @@ class _VeriryOTPState extends State<VerifyOTP> {
       } else {
         showErrorDialog('Server Error',
             'An error occurred while verifying the OTP. Please try again.');
+        print(url);
       }
     } catch (e) {
       showErrorDialog('Error',
@@ -464,27 +499,35 @@ class _VeriryOTPState extends State<VerifyOTP> {
 
   Future<void> resendOtp() async {
     bool dndMode = true;
-    try {
-      final url =
-          '$baseOtpUrl/api/sendotpmobile/${widget.phone_number}/$dndMode';
-      http.Response response = await http.get(Uri.parse(url), headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      });
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        final otpStatus = responseData['status'];
-        if (otpStatus == 200) {
-          utils.showErrorDialog(
-              context, 'OTP Resend Successfully', 'Kindly Check Your Inbox');
+    if (_resendCountDown == 0) {
+      try {
+        final url =
+            '$baseOtpUrl/api/sendotpmobile/${widget.phone_number}/$dndMode';
+        http.Response response = await http.get(Uri.parse(url), headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        });
+        if (response.statusCode == 200) {
+          final responseData = json.decode(response.body);
+          final otpStatus = responseData['status'];
+          if (otpStatus == 200) {
+            utils.showErrorDialog(
+                context, 'OTP Resend Successfully', 'Kindly Check Your Inbox');
+          }
+        } else {
+          showErrorDialog(
+              'OTP Resent Failure', 'Resent Otp not Send Due Server Failure');
         }
-      } else {
-        showErrorDialog(
-            'OTP Resent Failure', 'Resent Otp not Send Due Server Failure');
+        print(url);
+      } catch (e) {
+        showErrorDialog('', 'Failed');
       }
-      print(url);
-    } catch (e) {
-      showErrorDialog('', 'Failed');
+      startResendCooldown();
+    } else {
+      showErrorDialog(
+        'Resend OTP',
+        'Please wait ${_resendCountDown ~/ 60}:${(_resendCountDown % 60).toString().padLeft(2, '0')} before requesting a new OTP.',
+      );
     }
   }
 
