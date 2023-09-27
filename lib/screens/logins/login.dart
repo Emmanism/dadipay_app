@@ -327,19 +327,21 @@ class _WebViewPageState extends State<WebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: InAppWebView(
-        initialUrlRequest: URLRequest(
-            url: Uri.parse(
-              'https://app.dadipay.co/android.php?login_token=${widget.userToken}',
-            ),
-            headers: {
-              'Accept': 'application/vnd.api+json',
-              'Content-Type': 'application/json',
-            }),
-        onWebViewCreated: (InAppWebViewController controller) {
-          _webViewController = controller;
-        },
+    return SafeArea(
+      child: Scaffold(
+        body: InAppWebView(
+          initialUrlRequest: URLRequest(
+              url: Uri.parse(
+                'https://app.dadipay.co/android.php?login_token=${widget.userToken}',
+              ),
+              headers: {
+                'Accept': 'application/vnd.api+json',
+                'Content-Type': 'application/json',
+              }),
+          onWebViewCreated: (InAppWebViewController controller) {
+            _webViewController = controller;
+          },
+        ),
       ),
     );
   }
