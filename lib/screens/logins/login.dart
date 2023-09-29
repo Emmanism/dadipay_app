@@ -314,7 +314,7 @@ class _WebViewPageState extends State<WebViewPage> {
     }
 
     function displayMessage(message) {
-      alert(message);
+      print(message);
     }
 
     // Periodically check token validity (adjust the interval as needed)
