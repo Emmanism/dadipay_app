@@ -300,7 +300,6 @@ class _WebViewPageState extends State<WebViewPage> {
       .then(response => {
         if (response.status === 200) {
           // Token is still valid
-           displayMessage('Token is valid.');
         } else {
           // Token is no longer valid, close WebView and navigate to login page
           window.flutter_inappwebview.callHandler('closeWebView'); // Close WebView
@@ -313,9 +312,6 @@ class _WebViewPageState extends State<WebViewPage> {
       });
     }
 
-    function displayMessage(message) {
-      print(message);
-    }
 
     // Periodically check token validity (adjust the interval as needed)
     setInterval(checkToken, 5000); // Check every 5 seconds (example)
