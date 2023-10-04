@@ -10,6 +10,7 @@ import 'package:dadipay_app/widgets/button_widget.dart';
 import 'package:dadipay_app/widgets/my_input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 const MaterialColor black = MaterialColor(
@@ -36,6 +37,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
 
   final _login_formKey = GlobalKey<FormState>();
 
@@ -79,10 +81,20 @@ class _LoginState extends State<Login> {
   }
 
   void loginUser() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Center(
+            child: CircularProgressIndicator(
+          color: KprimaryColor,
+        ));
+      },
+    );
     Login(
         LogInModel(
             email: emailController.text, password: passwordController.text),
         context);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -98,18 +110,9 @@ class _LoginState extends State<Login> {
       child: Scaffold(
         backgroundColor: const Color(0xFFF3F3F3),
         body: Padding(
-          padding: EdgeInsets.only(bottom: 50),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'Login',
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.black),
-              ),
               Center(
                 child: Card(
                   shape: RoundedRectangleBorder(
@@ -117,9 +120,26 @@ class _LoginState extends State<Login> {
                   child: Theme(
                     data: ThemeData(primarySwatch: black),
                     child: Padding(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(10),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Image.asset(
+                            'assets/images/logos.png',
+                            height: 40,
+                          ),
+                          Divider(
+                            color: Colors.black,
+                            thickness: 1,
+                          ),
+                          Text('Login Into Your Account',
+                              style: GoogleFonts.poppins(
+                                textStyle: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.black),
+                              )),
                           const SizedBox(height: 18),
                           Form(
                             key: _login_formKey,
@@ -128,7 +148,8 @@ class _LoginState extends State<Login> {
                                 MyInputField(
                                   controller: emailController,
                                   hintText: 'Email',
-                                  prefixIcon: Icon(Icons.mail_outline_outlined),
+                                  prefixIcon: Icon(Icons.mail_outline_outlined,
+                                      color: KprimaryColor),
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) {
                                     RegExp emailRegExp = RegExp(
@@ -147,7 +168,10 @@ class _LoginState extends State<Login> {
                                   controller: passwordController,
                                   hintText: 'Password',
                                   isPassword: true,
-                                  prefixIcon: Icon(Icons.lock_outline_sharp),
+                                  prefixIcon: Icon(
+                                    Icons.lock_outline_sharp,
+                                    color: KprimaryColor,
+                                  ),
                                   keyboardType: TextInputType.visiblePassword,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -187,14 +211,17 @@ class _LoginState extends State<Login> {
                         onPressed: () {
                           Navigator.pushNamed(context, appRoutes.forgot);
                         },
-                        child: const Text(
-                          'Reset Password',
-                          style: TextStyle(color: KprimaryColor),
-                        )),
+                        child: const Text('Reset Password',
+                            style: TextStyle(
+                                color: KprimaryColor,
+                                fontWeight: FontWeight.bold))),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Don\'t have an account? '),
+                        const Text(
+                          'Don\'t have an account? ',
+                          style: TextStyle(color: Colors.black),
+                        ),
                         GestureDetector(
                           onTap: () {
                             Navigator.pushNamed(context, appRoutes.register);

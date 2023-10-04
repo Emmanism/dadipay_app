@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_brace_in_string_interps
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyInputField extends StatefulWidget {
   const MyInputField(
@@ -47,14 +48,17 @@ class _MyInputFieldState extends State<MyInputField> {
       keyboardType: widget.keyboardType,
       validator: widget.validator,
       onSaved: widget.onSaved,
-      style: const TextStyle(
-          color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
+      style:  GoogleFonts.poppins(
+        textStyle: TextStyle(
+          color: Colors.black, fontWeight: FontWeight.normal, fontSize: 15),
+
+      ),
       decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           hintText: widget.hintText,
           border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(18))),
+              borderRadius: BorderRadius.all(Radius.circular(8))),
           prefixIcon: widget.prefixIcon,
           labelText: widget.label,
           suffixIcon: widget.isPassword == false

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class ButtonWidget extends StatelessWidget {
   final String text;
   final Function() onPress;
+  bool isLoading = false;
   ButtonWidget({required this.text, required this.onPress});
 
   @override

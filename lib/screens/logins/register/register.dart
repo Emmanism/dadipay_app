@@ -14,6 +14,7 @@ import 'package:dadipay_app/widgets/button_widget.dart';
 import 'package:dadipay_app/widgets/my_input_field.dart';
 import 'package:dadipay_app/widgets/opt_field.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 const MaterialColor black = MaterialColor(
@@ -144,6 +145,11 @@ class _RegisterState extends State<Register> {
   }
 
   void registerUser() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(child: CircularProgressIndicator());
+        });
     Register(
         RegisterModel(
             firstName: firstNameController.text,
@@ -157,6 +163,8 @@ class _RegisterState extends State<Register> {
             password: passwordController.text,
             passwordConfirmation: passwordConfirmationController.text),
         context);
+
+    // Navigator.of(context).pop();
   }
 
   @override
@@ -168,24 +176,33 @@ class _RegisterState extends State<Register> {
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  'Sign Up',
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.black),
-                ),
                 Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0)),
                   child: Theme(
                     data: ThemeData(primarySwatch: black),
                     child: Padding(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(10),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Image.asset(
+                            'assets/images/logos.png',
+                            height: 40,
+                          ),
+                          Divider(
+                            color: Colors.black,
+                            thickness: 1,
+                          ),
+                          Text('Create An Account',
+                              style: GoogleFonts.poppins(
+                                textStyle: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.black),
+                              )),
                           const SizedBox(height: 18),
                           Form(
                             key: _register_formKey,
@@ -195,7 +212,8 @@ class _RegisterState extends State<Register> {
                                   controller: firstNameController,
                                   hintText: 'Firstname',
                                   label: 'Firstname',
-                                  prefixIcon: Icon(Icons.person_2_outlined),
+                                  prefixIcon: Icon(Icons.person_2_outlined,
+                                      color: KprimaryColor),
                                   keyboardType: TextInputType.name,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -209,7 +227,10 @@ class _RegisterState extends State<Register> {
                                   controller: lastNameController,
                                   label: 'Lastname',
                                   hintText: 'Lastname',
-                                  prefixIcon: Icon(Icons.person_2_outlined),
+                                  prefixIcon: Icon(
+                                    Icons.person_2_outlined,
+                                    color: KprimaryColor,
+                                  ),
                                   keyboardType: TextInputType.name,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -223,7 +244,10 @@ class _RegisterState extends State<Register> {
                                   controller: middleNameController,
                                   label: 'Middlename',
                                   hintText: 'Middlename',
-                                  prefixIcon: Icon(Icons.person_2_outlined),
+                                  prefixIcon: Icon(
+                                    Icons.person_2_outlined,
+                                    color: KprimaryColor,
+                                  ),
                                   keyboardType: TextInputType.name,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -237,7 +261,10 @@ class _RegisterState extends State<Register> {
                                   controller: occupationController,
                                   label: 'Occupation',
                                   hintText: 'Occupation',
-                                  prefixIcon: Icon(Icons.person_2_outlined),
+                                  prefixIcon: Icon(
+                                    Icons.person_2_outlined,
+                                    color: KprimaryColor,
+                                  ),
                                   keyboardType: TextInputType.name,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -251,7 +278,10 @@ class _RegisterState extends State<Register> {
                                   controller: fullNameController,
                                   label: 'Fullname',
                                   hintText: 'Fullname',
-                                  prefixIcon: Icon(Icons.person_2_outlined),
+                                  prefixIcon: Icon(
+                                    Icons.person_2_outlined,
+                                    color: KprimaryColor,
+                                  ),
                                   keyboardType: TextInputType.name,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -265,7 +295,10 @@ class _RegisterState extends State<Register> {
                                   controller: emailController,
                                   label: 'Email',
                                   hintText: 'Email',
-                                  prefixIcon: Icon(Icons.mail_outline_outlined),
+                                  prefixIcon: Icon(
+                                    Icons.mail_outline_outlined,
+                                    color: KprimaryColor,
+                                  ),
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) {
                                     RegExp emailRegExp = RegExp(
@@ -284,7 +317,10 @@ class _RegisterState extends State<Register> {
                                   controller: phoneNumberController,
                                   label: 'Phone Number',
                                   hintText: ' Enter Phone Number',
-                                  prefixIcon: Icon(Icons.phone),
+                                  prefixIcon: Icon(
+                                    Icons.phone,
+                                    color: KprimaryColor,
+                                  ),
                                   keyboardType: TextInputType.number,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -298,8 +334,11 @@ class _RegisterState extends State<Register> {
                                   controller: userNameController,
                                   label: 'Username',
                                   hintText: 'Unique Username',
-                                  prefixIcon: Icon(Icons.person_2_outlined),
-                                  keyboardType: TextInputType.emailAddress,
+                                  prefixIcon: Icon(
+                                    Icons.person_2_outlined,
+                                    color: KprimaryColor,
+                                  ),
+                                  keyboardType: TextInputType.text,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'This Field cant be empty';
@@ -313,7 +352,10 @@ class _RegisterState extends State<Register> {
                                   label: 'Password',
                                   hintText: ' Create a Strong Password',
                                   isPassword: true,
-                                  prefixIcon: Icon(Icons.lock_outline_sharp),
+                                  prefixIcon: Icon(
+                                    Icons.lock_outline_sharp,
+                                    color: KprimaryColor,
+                                  ),
                                   keyboardType: TextInputType.visiblePassword,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -328,7 +370,10 @@ class _RegisterState extends State<Register> {
                                   label: 'Comfirm Password',
                                   hintText: ' Comfirm Password',
                                   isPassword: true,
-                                  prefixIcon: Icon(Icons.lock_outline_sharp),
+                                  prefixIcon: Icon(
+                                    Icons.lock_outline_sharp,
+                                    color: KprimaryColor,
+                                  ),
                                   keyboardType: TextInputType.visiblePassword,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -363,18 +408,23 @@ class _RegisterState extends State<Register> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text('Already  have an account? '),
+                          Text(
+                            'Already  have an account? ',
+                            style: GoogleFonts.poppins(textStyle: TextStyle()),
+                          ),
                           GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, appRoutes.login);
-                            },
-                            child: Text(
-                              'Login Here',
-                              style: TextStyle(
-                                  color: KprimaryColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          )
+                              onTap: () {
+                                Navigator.pushNamed(context, appRoutes.login);
+                              },
+                              child: Text(
+                                'Login Here',
+                                style: GoogleFonts.poppins(
+                                    textStyle: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
+                                      color: KprimaryColor,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                              ))
                         ],
                       ),
                     ],
