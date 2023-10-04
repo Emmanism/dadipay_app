@@ -81,20 +81,10 @@ class _LoginState extends State<Login> {
   }
 
   void loginUser() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Center(
-            child: CircularProgressIndicator(
-          color: KprimaryColor,
-        ));
-      },
-    );
     Login(
         LogInModel(
             email: emailController.text, password: passwordController.text),
         context);
-    Navigator.of(context).pop();
   }
 
   @override
@@ -183,9 +173,19 @@ class _LoginState extends State<Login> {
                                 const SizedBox(height: 20),
                                 ButtonWidget(
                                   onPress: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              color: KprimaryColor,
+                                            ),
+                                          );
+                                        });
                                     if (_login_formKey.currentState!
                                         .validate()) {
                                       loginUser();
+                                      Navigator.of(context).pop();
                                     } else {
                                       utils.showSnackBar(
                                           context, 'Check Field');

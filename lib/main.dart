@@ -36,8 +36,9 @@ class MyApp extends StatelessWidget {
         title: 'Dadipay_app',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: KprimaryColor),
-          useMaterial3: true,
+          primaryColor: KprimaryColor,
+          colorScheme:
+              ColorScheme.fromSwatch().copyWith(secondary: KprimaryColor),
         ),
         onGenerateRoute: appRoutes.controller,
         initialRoute: isViewed == false ? appRoutes.onboard : appRoutes.login);
